@@ -52,7 +52,7 @@ function Sidebar() {
         <span style={{ fontSize: '28px' }}>👤</span>
         <div>
           <div style={{ fontSize: '13px', fontWeight: '600', color: '#f1f5f9' }}>
-            Alex Johnson
+            Bhumika Shrestha
           </div>
           <div style={{ fontSize: '11px', color: '#94a3b8' }}>
             Personal Account

@@ -55,7 +55,7 @@ function Dashboard() {
 
   return (
     <div>
-      <h2 className="page-title">👋 Welcome back, Alex!</h2>
+      <h2 className="page-title">👋 Welcome back, Bhumika!</h2>
 
       {/* === ALERTS SECTION === */}
       <section aria-label="Alerts" style={{ marginBottom: '24px' }}>
