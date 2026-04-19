@@ -10,34 +10,11 @@ import Settings from './pages/Settings';
 function App() {
   return (
     <BrowserRouter>
-      <div style={{
-        display: 'flex',
-        width: '100vw',
-        minHeight: '100vh',
-        overflowX: 'hidden',
-        backgroundColor: '#0f172a',
-      }}>
-
-        {/* Sidebar */}
+      <div className="app-layout">
         <Sidebar />
-
-        {/* Main area */}
-        <div style={{
-          flex: 1,
-          minWidth: 0,
-          width: '100%',
-          marginLeft: '240px',
-          display: 'flex',
-          flexDirection: 'column',
-        }}>
+        <div className="page-wrapper">
           <Navbar />
-          <main style={{
-            flex: 1,
-            padding: '24px',
-            width: '100%',
-            boxSizing: 'border-box',
-            overflowX: 'hidden',
-          }}>
+          <main className="main-content">
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" />} />
               <Route path="/dashboard" element={<Dashboard />} />
@@ -48,7 +25,6 @@ function App() {
             </Routes>
           </main>
         </div>
-
       </div>
     </BrowserRouter>
   );

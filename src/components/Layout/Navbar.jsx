@@ -1,6 +1,3 @@
-// Navbar.jsx
-// Top bar that shows current page title and alerts
-
 import { useLocation } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
 
@@ -21,18 +18,17 @@ function Navbar() {
   return (
     <header style={styles.navbar} role="banner">
       <h1 style={styles.title}>{title}</h1>
-      <div style={styles.rightSection}>
-        <div style={styles.alertBell} aria-label={`${alertCount} alerts`}>
+      <div style={styles.right}>
+        <div style={{ position: 'relative', fontSize: '20px', cursor: 'pointer' }}
+          aria-label={`${alertCount} alerts`}>
           🔔
           {alertCount > 0 && (
-            <span style={styles.alertBadge}>{alertCount}</span>
+            <span style={styles.badge}>{alertCount}</span>
           )}
         </div>
         <div style={styles.date}>
           {new Date().toLocaleDateString('en-AU', {
-            weekday: 'short',
-            month: 'short',
-            day: 'numeric'
+            weekday: 'short', month: 'short', day: 'numeric'
           })}
         </div>
       </div>
@@ -53,23 +49,19 @@ const styles = {
     top: 0,
     zIndex: 90,
     width: '100%',
+    boxSizing: 'border-box',
   },
   title: {
     fontSize: '18px',
     fontWeight: '600',
     color: '#f1f5f9',
   },
-  rightSection: {
+  right: {
     display: 'flex',
     alignItems: 'center',
     gap: '20px',
   },
-  alertBell: {
-    position: 'relative',
-    fontSize: '20px',
-    cursor: 'pointer',
-  },
-  alertBadge: {
+  badge: {
     position: 'absolute',
     top: '-6px',
     right: '-6px',
