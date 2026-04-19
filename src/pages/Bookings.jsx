@@ -1,6 +1,3 @@
-// Bookings.jsx
-// Page to view and add bookings/appointments
-
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import Modal from '../components/UI/Modal';
@@ -11,34 +8,34 @@ function Bookings() {
   const [search, setSearch]       = useState('');
   const [filter, setFilter]       = useState('All');
   const [showModal, setShowModal] = useState(false);
-
-  const [form, setForm] = useState({
-    title: '', provider: '', date: '',
-    time: '', status: 'Pending', icon: '📅',
-    color: '#6366f1', notes: ''
+  const [form, setForm]           = useState({
+    title: '',
+    location: '',
+    date: '',
+    time: '',
+    status: 'confirmed',
+    icon: '📅',
+    notes: ''
   });
-
   const [formErrors, setFormErrors] = useState({});
 
-  // Filter & search
   const filtered = bookings.filter(b => {
-    const matchSearch = b.title.toLowerCase().includes(search.toLowerCase()) ||
-                        b.provider.toLowerCase().includes(search.toLowerCase());
+    const matchSearch =
+      b.title.toLowerCase().includes(search.toLowerCase()) ||
+      b.location.toLowerCase().includes(search.toLowerCase());
     const matchFilter = filter === 'All' || b.status === filter;
     return matchSearch && matchFilter;
   });
 
-  // Validate form
   const validate = () => {
     const errors = {};
-    if (!form.title.trim())    errors.title = 'Title is required';
-    if (!form.provider.trim()) errors.provider = 'Provider is required';
-    if (!form.date)            errors.date = 'Date is required';
-    if (!form.time)            errors.time = 'Time is required';
+    if (!form.title.trim())    errors.title    = 'Title is required';
+    if (!form.location.trim()) errors.location = 'Location is required';
+    if (!form.date)            errors.date     = 'Date is required';
+    if (!form.time)            errors.time     = 'Time is required';
     return errors;
   };
 
-  // Submit form
   const handleSubmit = () => {
     const errors = validate();
     if (Object.keys(errors).length > 0) {
@@ -47,12 +44,21 @@ function Bookings() {
     }
     addBooking(form);
     setShowModal(false);
-    setForm({ title: '', provider: '', date: '', time: '', status: 'Pending', icon: '📅', color: '#6366f1', notes: '' });
+    setForm({
+      title: '', location: '', date: '',
+      time: '', status: 'confirmed',
+      icon: '📅', notes: ''
+    });
     setFormErrors({});
   };
 
-  if (loading) return <div className="loading-container"><div className="spinner"></div> Loading...</div>;
-  if (error)   return <div className="error-container">❌ {error}</div>;
+  if (loading) return (
+    <div className="loading-container">
+      <div className="spinner"></div> Loading...
+    </div>
+  );
+
+  if (error) return <div className="error-container">❌ {error}</div>;
 
   return (
     <div>
@@ -75,8 +81,8 @@ function Bookings() {
           aria-label="Filter by status"
         >
           <option value="All">All Status</option>
-          <option value="Confirmed">Confirmed</option>
-          <option value="Pending">Pending</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="pending">Pending</option>
         </select>
         <button
           className="btn btn-primary"
@@ -87,7 +93,17 @@ function Bookings() {
         </button>
       </div>
 
-      {/* Bookings cards grid */}
+      {/* Summary */}
+      <div style={styles.summary}>
+        <span>Total: <strong>{filtered.length} bookings</strong></span>
+        <span>
+          Confirmed: <strong style={{ color: '#60a5fa' }}>
+            {filtered.filter(b => b.status === 'confirmed').length}
+          </strong>
+        </span>
+      </div>
+
+      {/* Cards or Empty State */}
       {filtered.length === 0 ? (
         <div className="empty-state">
           <div className="empty-icon">📅</div>
@@ -100,41 +116,34 @@ function Bookings() {
               key={b.id}
               className="card"
               aria-label={b.title}
-              style={{ borderLeft: `4px solid ${b.color}` }}
+              style={{ borderLeft: '4px solid #6366f1' }}
             >
-              {/* Header */}
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
                 <span style={{ fontSize: '28px' }}>{b.icon}</span>
-                <span className={`badge badge-${b.status.toLowerCase()}`}>{b.status}</span>
+                <span className={`badge badge-${b.status}`}>{b.status}</span>
               </div>
 
-              {/* Title */}
-              <h3 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '6px' }}>{b.title}</h3>
-              <p style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '12px' }}>{b.provider}</p>
+              <h3 style={styles.cardTitle}>{b.title}</h3>
+              <p style={styles.cardSub}>📍 {b.location}</p>
 
-              {/* Date & time */}
               <div style={styles.infoRow}>
                 <span>📆</span>
-                <span style={{ fontSize: '13px', color: '#94a3b8' }}>{b.date}</span>
+                <span style={styles.infoText}>{b.date}</span>
               </div>
               <div style={styles.infoRow}>
                 <span>🕐</span>
-                <span style={{ fontSize: '13px', color: '#94a3b8' }}>{b.time}</span>
+                <span style={styles.infoText}>{b.time}</span>
               </div>
 
-              {/* Notes */}
               {b.notes && (
-                <p style={{ fontSize: '12px', color: '#64748b', marginTop: '10px', fontStyle: 'italic' }}>
-                  {b.notes}
-                </p>
+                <p style={styles.notes}>{b.notes}</p>
               )}
 
-              {/* Delete button */}
               <button
                 className="btn btn-danger"
                 style={{ width: '100%', marginTop: '16px', padding: '8px' }}
                 onClick={() => deleteBooking(b.id)}
-                aria-label={`Delete ${b.title}`}
+                aria-label={`Cancel ${b.title}`}
               >
                 Cancel Booking
               </button>
@@ -160,15 +169,15 @@ function Bookings() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="book-provider">Provider / Location *</label>
+            <label htmlFor="book-loc">Location *</label>
             <input
-              id="book-provider"
+              id="book-loc"
               type="text"
               placeholder="e.g. City Dental Clinic"
-              value={form.provider}
-              onChange={e => setForm({ ...form, provider: e.target.value })}
+              value={form.location}
+              onChange={e => setForm({ ...form, location: e.target.value })}
             />
-            {formErrors.provider && <p className="error-text">{formErrors.provider}</p>}
+            {formErrors.location && <p className="error-text">{formErrors.location}</p>}
           </div>
 
           <div className="form-group">
@@ -211,16 +220,44 @@ function Bookings() {
               value={form.status}
               onChange={e => setForm({ ...form, status: e.target.value })}
             >
-              <option value="Confirmed">Confirmed</option>
-              <option value="Pending">Pending</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="pending">Pending</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="book-icon">Icon</label>
+            <select
+              id="book-icon"
+              value={form.icon}
+              onChange={e => setForm({ ...form, icon: e.target.value })}
+            >
+              <option value="📅">📅 General</option>
+              <option value="🦷">🦷 Dentist</option>
+              <option value="🚗">🚗 Car Service</option>
+              <option value="👁️">👁️ Eye Checkup</option>
+              <option value="✂️">✂️ Haircut</option>
+              <option value="🏥">🏥 Medical</option>
+              <option value="💪">💪 Gym</option>
+              <option value="🔧">🔧 Technician</option>
+              <option value="📚">📚 Education</option>
+              <option value="🍽️">🍽️ Restaurant</option>
             </select>
           </div>
 
           <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
-            <button className="btn btn-primary" style={{ flex: 1 }} onClick={handleSubmit}>
+            <button
+              className="btn btn-primary"
+              style={{ flex: 1 }}
+              onClick={handleSubmit}
+            >
               Add Booking
             </button>
-            <button className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowModal(false)}>
+            <button
+              className="btn btn-outline"
+              style={{ flex: 1 }}
+              onClick={() => setShowModal(false)}
+            >
               Cancel
             </button>
           </div>
@@ -232,11 +269,39 @@ function Bookings() {
 }
 
 const styles = {
+  summary: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginBottom: '16px',
+    fontSize: '14px',
+    color: '#94a3b8',
+  },
+  cardTitle: {
+    fontSize: '15px',
+    fontWeight: 600,
+    marginBottom: '4px',
+    color: '#f1f5f9',
+  },
+  cardSub: {
+    fontSize: '13px',
+    color: '#94a3b8',
+    marginBottom: '12px',
+  },
   infoRow: {
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
     marginBottom: '4px',
+  },
+  infoText: {
+    fontSize: '13px',
+    color: '#94a3b8',
+  },
+  notes: {
+    fontSize: '12px',
+    color: '#64748b',
+    marginTop: '10px',
+    fontStyle: 'italic',
   },
 };
 
