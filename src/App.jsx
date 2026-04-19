@@ -1,6 +1,3 @@
-// App.jsx
-// This sets up all the routes (pages) of our app
-
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Sidebar from './components/Layout/Sidebar';
 import Navbar from './components/Layout/Navbar';
@@ -13,19 +10,35 @@ import Settings from './pages/Settings';
 function App() {
   return (
     <BrowserRouter>
-      <div className="app-layout">
+      <div style={{
+        display: 'flex',
+        width: '100vw',
+        minHeight: '100vh',
+        overflowX: 'hidden',
+        backgroundColor: '#0f172a',
+      }}>
 
-        {/* Sidebar - shows on all pages */}
+        {/* Sidebar */}
         <Sidebar />
 
-        {/* Right side - navbar + page content */}
-        <div style={{ flex: 1 }}>
+        {/* Main area */}
+        <div style={{
+          flex: 1,
+          minWidth: 0,
+          width: '100%',
+          marginLeft: '240px',
+          display: 'flex',
+          flexDirection: 'column',
+        }}>
           <Navbar />
-
-          {/* Page Routes */}
-          <main className="main-content">
+          <main style={{
+            flex: 1,
+            padding: '24px',
+            width: '100%',
+            boxSizing: 'border-box',
+            overflowX: 'hidden',
+          }}>
             <Routes>
-              {/* Default route goes to dashboard */}
               <Route path="/" element={<Navigate to="/dashboard" />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/subscriptions" element={<Subscriptions />} />

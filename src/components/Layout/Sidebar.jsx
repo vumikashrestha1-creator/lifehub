@@ -67,10 +67,12 @@ const styles = {
     position: 'fixed',
     top: 0,
     left: 0,
+    bottom: 0,
     display: 'flex',
     flexDirection: 'column',
-    padding: '0',
+    //padding: '0',
     zIndex: 100,
+    overflowY: 'auto',
   },
   logo: {
     display: 'flex',

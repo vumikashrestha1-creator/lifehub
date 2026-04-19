@@ -4,7 +4,6 @@
 import { useLocation } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
 
-// Map routes to page titles
 const pageTitles = {
   '/dashboard':     'Dashboard',
   '/subscriptions': 'Subscriptions',
@@ -16,30 +15,19 @@ const pageTitles = {
 function Navbar() {
   const location = useLocation();
   const { upcomingRenewals, upcomingBookings } = useApp();
-
-  // Total alerts count
   const alertCount = upcomingRenewals.length + upcomingBookings.length;
-
   const title = pageTitles[location.pathname] || 'LifeHub';
 
   return (
     <header style={styles.navbar} role="banner">
-
-      {/* Page Title */}
       <h1 style={styles.title}>{title}</h1>
-
-      {/* Right side icons */}
       <div style={styles.rightSection}>
-
-        {/* Alert bell */}
         <div style={styles.alertBell} aria-label={`${alertCount} alerts`}>
           🔔
           {alertCount > 0 && (
             <span style={styles.alertBadge}>{alertCount}</span>
           )}
         </div>
-
-        {/* Current date */}
         <div style={styles.date}>
           {new Date().toLocaleDateString('en-AU', {
             weekday: 'short',
@@ -47,7 +35,6 @@ function Navbar() {
             day: 'numeric'
           })}
         </div>
-
       </div>
     </header>
   );
@@ -65,7 +52,7 @@ const styles = {
     position: 'sticky',
     top: 0,
     zIndex: 90,
-    marginLeft: '0',
+    width: '100%',
   },
   title: {
     fontSize: '18px',
